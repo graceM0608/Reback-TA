@@ -7,17 +7,19 @@
 #include <vector>
 #include <thread>
 #include <iostream>
-
+#include<mutex>
 int total = 0;
 
 class Wallet
 {
     int mMoney;
+    std::mutex mMutex;
 public:
     Wallet() :mMoney(0) {}
     int getMoney() { return mMoney; }
     void addMoney(int money)
     {
+        std::lock_guard<std::mutex> lock(mMutex);
         for (int i = 0; i < money; ++i)
         {
             mMoney++;
@@ -33,7 +35,7 @@ int fillWalletWithMoney()
     for (int i = 0; i < 5; ++i) {
         threads.push_back(std::thread(&Wallet::addMoney, &walletObject, 1000));
     }
-    for (int i = 0; i < threads.size(); i++)
+    for (size_t i = 0; i < threads.size(); i++)
     {
         threads.at(i).join();
     }

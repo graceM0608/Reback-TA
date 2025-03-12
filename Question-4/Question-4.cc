@@ -4,6 +4,9 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+using ::testing::AtLeast;
+using ::testing::Exactly;
+using ::testing::_;
 /// Question 4: This is an extension task. Look at the interface class Observer. This class's responsibility 
 /// is to observe and react any changes happening to the EventEmitter class, which emits an event via calling `emitEvent`. 
 /// 
@@ -23,8 +26,12 @@ class Actor;
 class Observer {
 public:
 	virtual void ReactToEvent(Actor* actor) = 0;
+	virtual ~Observer() = default;
 };
-
+class MockObserver : public Observer {
+public:
+    MOCK_METHOD(void, ReactToEvent, (Actor* actor), (override));
+};
 class Actor {
 	using ObserverPtr = std::shared_ptr<Observer>;
 
